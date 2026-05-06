@@ -23,7 +23,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<HospitalContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection")
-));
+    ));
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -31,12 +31,15 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Swagger UI
-if (app.Environment.IsDevelopment())
+// --- RAILWAY ---
+// Se habilitan Swagger y SwaggerUI fuera del bloque IsDevelopment
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Proyecto_H API V1");
+    c.RoutePrefix = string.Empty; // Esto hace que Swagger cargue en la raíz del link
+});
+// --------------------------------
 
 // 🔴 ACTIVAR CORS (ANTES de MapControllers)
 app.UseCors("AllowAll");
